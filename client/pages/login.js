@@ -55,13 +55,10 @@ const login = () => {
 
     try {
       setloading(true);
-      const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_API}/login`,
-        {
-          email,
-          password,
-        }
-      );
+      const { data } = await axios.post("/login", {
+        email,
+        password,
+      });
       setstate({
         user: data.user,
         token: data.token,
