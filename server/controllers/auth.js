@@ -37,7 +37,7 @@ export const login = async (req, res) => {
     const match = await comparepassword(password, user.password);
     if (!match) return res.status(400).send("Wron Password");
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
+      expiresIn: "20000",
     });
     user.password = undefined;
     user.secret = undefined;
