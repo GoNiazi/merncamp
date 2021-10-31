@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+.register {
+  width: 100vw;
+  height: 300px;
+  background-image: url("/images/default.jpg");
+  background-color: grey;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  text-shadow: 2px 2px 2px #0001;
+}
