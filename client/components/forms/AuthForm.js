@@ -5,6 +5,7 @@ import SendIcon from "@mui/icons-material/Send";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
+import { SyncOutlined } from "@ant-design/icons";
 
 const AuthForm = ({
   name,
@@ -16,17 +17,16 @@ const AuthForm = ({
   secret,
   setsecret,
   loading,
-  question,
-  classes,
+
   setloading,
-  questions,
+
   handleSubmit,
-  setquestion,
+
   page,
 }) => {
   return (
-    <div>
-      <form className={classes.root}>
+    <>
+      {/* <form className={classes.root}>
         {page !== "login" && (
           <TextField
             id="name"
@@ -108,8 +108,80 @@ const AuthForm = ({
             "submit"
           )}
         </Button>
+      </form> */}
+      <form>
+        {page !== "login" && (
+          <div className="form-group p-2">
+            <label className="text-muted">Name</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter name"
+              value={name}
+              onChange={(e) => setname(e.target.value)}
+            />
+          </div>
+        )}
+
+        <div className="form-group p-2">
+          <label className="text-muted">Email</label>
+          <input
+            type="email"
+            className="form-control"
+            placeholder="Enter email"
+            value={email}
+            onChange={(e) => setemail(e.target.value)}
+          />
+        </div>
+        <div className="form-group p-2">
+          <label className="text-muted">Password</label>
+          <input
+            type="password"
+            className="form-control"
+            placeholder="Enter name"
+            value={password}
+            onChange={(e) => setpassword(e.target.value)}
+          />
+        </div>
+        {page !== "login" && (
+          <div className="form-group p-2">
+            <label className="text-muted">Pick a question</label>
+            <select className="form-control">
+              <option>What is your favourite color?</option>
+              <option>What is your Best friend name?</option>
+              <option>What City you were born?</option>
+            </select>
+            <small className="form-text text-muted">
+              You can use this to reset your password if forgetten.
+            </small>
+          </div>
+        )}
+        {page !== "login" && (
+          <div className="form-group p-2">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter your answer here"
+              value={secret}
+              onChange={(e) => setsecret(e.target.value)}
+            />
+          </div>
+        )}
+
+        <button
+          type="submit"
+          className="btn btn-primary btn-block col-12"
+          onClick={handleSubmit}
+          disabled={
+            page === "login"
+              ? !email || !password
+              : !name || !email || !password || !secret
+          }
+        >
+          {loading ? <SyncOutlined spin className="py-1" /> : "Submit"}
+        </button>
       </form>
-    </div>
+    </>
   );
 };
 

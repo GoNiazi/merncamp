@@ -3,6 +3,7 @@ import { hashPassword, comparepassword } from "./../helpers/auth";
 import jwt from "jsonwebtoken";
 export const register = async (req, res) => {
   const { name, email, password, secret } = req.body;
+
   //VALIDATION
   if (!name) return res.status(400).send("Name is required");
   if (!password || password.length < 6) {
@@ -33,11 +34,14 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).send("User not found");
+    if (!user) {
+      console.log(email, password);
+      return res.status(400).send("User not found");
+    }
     const match = await comparepassword(password, user.password);
-    if (!match) return res.status(400).send("Wron Password");
+    if (!match) return res.status(400).send("Wrong Password");
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "20000",
+      expiresIn: "7d",
     });
     user.password = undefined;
     user.secret = undefined;
@@ -47,7 +51,7 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(400).send("Error, try again");
+    return res.status(400).send("Error, try again");
   }
 };
 

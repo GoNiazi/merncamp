@@ -52,7 +52,6 @@ const login = () => {
   const [state, setstate] = useContext(UserContext);
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       setloading(true);
       const { data } = await axios.post("/login", {
@@ -63,12 +62,14 @@ const login = () => {
         user: data.user,
         token: data.token,
       });
+      console.log();
       //Save user in local storage
       window.localStorage.setItem("auth", JSON.stringify(data));
       router.push("/user/dashboard");
       setloading(false);
     } catch (error) {
       toast.error(error.response.data);
+
       setloading(false);
     }
   };
@@ -80,8 +81,22 @@ const login = () => {
       <div className="register">
         <h1>Login</h1>
       </div>
-
-      <Box
+      <div className="row py-5">
+        <div className="col-md-5 offset-md-3">
+          <AuthForm
+            handleSubmit={handleSubmit}
+            email={email}
+            setemail={setemail}
+            password={password}
+            setpassword={setpassword}
+            loading={loading}
+            setloading={setloading}
+            classes={classes}
+            page="login"
+          />
+        </div>
+      </div>
+      {/* <Box
         component="form"
         sx={{
           width: "100vw",
@@ -93,17 +108,6 @@ const login = () => {
         }}
         autoComplete="off"
       >
-        <AuthForm
-          handleSubmit={handleSubmit}
-          email={email}
-          setemail={setemail}
-          password={password}
-          setpassword={setpassword}
-          loading={loading}
-          setloading={setloading}
-          classes={classes}
-          page="login"
-        />
         <p>
           Not yet registered?{" "}
           <Link href="/register">
@@ -112,7 +116,7 @@ const login = () => {
             </Button>
           </Link>
         </p>
-      </Box>
+      </Box> */}
     </>
   );
 };

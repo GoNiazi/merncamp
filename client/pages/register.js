@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Modal from "@mui/material/Modal";
+
 import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
@@ -16,6 +16,7 @@ import LoopIcon from "@material-ui/icons/Loop";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import AuthForm from "./../components/forms/AuthForm";
+import { Modal } from "antd";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
@@ -73,6 +74,7 @@ const register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(name, email, password, secret);
 
     try {
       setloading(true);
@@ -89,7 +91,7 @@ const register = () => {
       setok(data.ok);
       setloading(false);
     } catch (error) {
-      toast.error(error.response.data);
+      toast.error(error.response.status);
       setloading(false);
     }
   };
@@ -100,20 +102,43 @@ const register = () => {
       <div className="register">
         <h1>Register</h1>
       </div>
-
-      <Box
-        component="form"
-        sx={{
-          width: "100vw",
-          height: "500px",
-          display: "flex",
-          flexDirection: { xs: "column" },
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        autoComplete="off"
-      >
-        <AuthForm
+      <div className="row py-5">
+        <div className="col-md-6 offset-md-3">
+          <AuthForm
+            handleSubmit={handleSubmit}
+            name={name}
+            email={email}
+            setname={setname}
+            setemail={setemail}
+            password={password}
+            setpassword={setpassword}
+            secret={secret}
+            setsecret={setsecret}
+            loading={loading}
+            question={question}
+            setquestion={setquestion}
+            setloading={setloading}
+            classes={classes}
+            questions={questions}
+          />
+        </div>
+      </div>
+      <div className="row">
+        <div className="col">
+          <Modal
+            title={"Congratulations!"}
+            visible={ok}
+            onCancel={() => setok(false)}
+            footer={null}
+          >
+            <p>You have have successfully registered</p>
+            <Link href="/login">
+              <a className="btn btn-primary btn-sm">Login</a>
+            </Link>
+          </Modal>
+        </div>
+      </div>
+      {/* <AuthForm
           handleSubmit={handleSubmit}
           name={name}
           email={email}
@@ -155,9 +180,9 @@ const register = () => {
                 Login
               </Button>
             </Link>
-          </Box>
+          
         </Fade>
-      </Modal>
+      </Modal> */}
     </>
   );
 };
