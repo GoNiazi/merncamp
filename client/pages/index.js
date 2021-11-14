@@ -3,7 +3,7 @@ import { UserContext } from "../context";
 
 const index = () => {
   const [state, setstate] = useContext(UserContext);
-  console.log("home page");
+
   return (
     <div>
       <h1>Home page</h1>

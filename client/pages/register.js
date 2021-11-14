@@ -1,37 +1,37 @@
 import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../context";
-import { makeStyles } from "@material-ui/core";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
-import SendIcon from "@mui/icons-material/Send";
 import axios from "axios";
 import { toast } from "react-toastify";
-
-import Backdrop from "@mui/material/Backdrop";
-import Fade from "@mui/material/Fade";
-import Typography from "@mui/material/Typography";
-import LoopIcon from "@material-ui/icons/Loop";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import AuthForm from "./../components/forms/AuthForm";
 import { Modal } from "antd";
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-    display: "flex",
-    flexDirection: "column",
+// import { makeStyles } from "@material-ui/core";
+// import Box from "@mui/material/Box";
+// import TextField from "@mui/material/TextField";
+// import MenuItem from "@mui/material/MenuItem";
+// import Button from "@mui/material/Button";
+// import SendIcon from "@mui/icons-material/Send";
+// import Backdrop from "@mui/material/Backdrop";
+// import Fade from "@mui/material/Fade";
+// import Typography from "@mui/material/Typography";
+// import LoopIcon from "@material-ui/icons/Loop";
 
-    "& .MuiTextField-root": {
-      margin: theme.spacing(1),
-      width: "500px",
-    },
-  },
-  rotateIcon: {
-    animation: "spin 0.6s linear infinite",
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     padding: theme.spacing(2),
+//     display: "flex",
+//     flexDirection: "column",
+
+//     "& .MuiTextField-root": {
+//       margin: theme.spacing(1),
+//       width: "500px",
+//     },
+//   },
+//   rotateIcon: {
+//     animation: "spin 0.6s linear infinite",
+//   },
+// }));
 const style = {
   position: "absolute",
   top: "30%",
@@ -61,7 +61,7 @@ const questions = [
 ];
 
 const register = () => {
-  const classes = useStyles();
+  // const classes = useStyles();
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
@@ -84,14 +84,19 @@ const register = () => {
         password,
         secret,
       });
-      setname("");
-      setemail("");
-      setpassword("");
-      setsecret("");
-      setok(data.ok);
-      setloading(false);
+      if (data.error) {
+        toast.error(data.error);
+        setloading(false);
+      } else {
+        setname("");
+        setemail("");
+        setpassword("");
+        setsecret("");
+        setok(data.ok);
+        setloading(false);
+      }
     } catch (error) {
-      toast.error(error.response.status);
+      toast.error(error);
       setloading(false);
     }
   };
@@ -103,7 +108,7 @@ const register = () => {
         <h1>Register</h1>
       </div>
       <div className="row py-5">
-        <div className="col-md-6 offset-md-3">
+        <div className="col-md-4 offset-md-4">
           <AuthForm
             handleSubmit={handleSubmit}
             name={name}
@@ -118,7 +123,6 @@ const register = () => {
             question={question}
             setquestion={setquestion}
             setloading={setloading}
-            classes={classes}
             questions={questions}
           />
         </div>

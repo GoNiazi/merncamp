@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <Nav />
       <ToastContainer
-        position="top-center"
+        position="top-right"
         autoClose={5000}
         hideProgressBar={false}
         newestOnTop

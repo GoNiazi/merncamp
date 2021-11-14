@@ -1,36 +1,22 @@
 import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../context";
-import { makeStyles } from "@material-ui/core";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
-import SendIcon from "@mui/icons-material/Send";
+// import { makeStyles } from "@material-ui/core";
+// import Box from "@mui/material/Box";
+// import TextField from "@mui/material/TextField";
+// import MenuItem from "@mui/material/MenuItem";
+// import Button from "@mui/material/Button";
+// import SendIcon from "@mui/icons-material/Send";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Modal from "@mui/material/Modal";
-import Backdrop from "@mui/material/Backdrop";
-import Fade from "@mui/material/Fade";
-import Typography from "@mui/material/Typography";
-import LoopIcon from "@material-ui/icons/Loop";
+// import Modal from "@mui/material/Modal";
+// import Backdrop from "@mui/material/Backdrop";
+// import Fade from "@mui/material/Fade";
+// import Typography from "@mui/material/Typography";
+// import LoopIcon from "@material-ui/icons/Loop";
 import Link from "next/link";
 import AuthForm from "./../components/forms/AuthForm";
 import { useRouter } from "next/router";
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-    display: "flex",
-    flexDirection: "column",
 
-    "& .MuiTextField-root": {
-      margin: theme.spacing(1),
-      width: "500px",
-    },
-  },
-  rotateIcon: {
-    animation: "spin 0.6s linear infinite",
-  },
-}));
 const style = {
   position: "absolute",
   top: "30%",
@@ -44,7 +30,6 @@ const style = {
 };
 
 const login = () => {
-  const classes = useStyles();
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [loading, setloading] = useState(false);
@@ -58,17 +43,24 @@ const login = () => {
         email,
         password,
       });
-      setstate({
-        user: data.user,
-        token: data.token,
-      });
-      console.log();
-      //Save user in local storage
-      window.localStorage.setItem("auth", JSON.stringify(data));
-      router.push("/user/dashboard");
-      setloading(false);
-    } catch (error) {
-      toast.error(error.response.data);
+
+      if (data.error) {
+        toast.error(data.error);
+        setloading(false);
+      } else {
+        setstate({
+          user: data.user,
+          token: data.token,
+        });
+
+        window.localStorage.setItem("auth", JSON.stringify(data));
+        router.push("/user/dashboard");
+        setloading(false);
+      }
+      // Save user in local storage
+    } catch (err) {
+      // console.log("hello im back in catch");
+      toast.error(error);
 
       setloading(false);
     }
@@ -82,7 +74,7 @@ const login = () => {
         <h1>Login</h1>
       </div>
       <div className="row py-5">
-        <div className="col-md-5 offset-md-3">
+        <div className="col-md-4 offset-md-4">
           <AuthForm
             handleSubmit={handleSubmit}
             email={email}
@@ -91,32 +83,29 @@ const login = () => {
             setpassword={setpassword}
             loading={loading}
             setloading={setloading}
-            classes={classes}
             page="login"
           />
         </div>
       </div>
-      {/* <Box
-        component="form"
-        sx={{
-          width: "100vw",
-          height: "500px",
-          display: "flex",
-          flexDirection: { xs: "column" },
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        autoComplete="off"
-      >
-        <p>
-          Not yet registered?{" "}
-          <Link href="/register">
-            <Button color="primary" variant="contained">
-              Register
-            </Button>
-          </Link>
-        </p>
-      </Box> */}
+      <div className="row">
+        <div className="col">
+          <p className="text-center h6">
+            You are not registered?{" "}
+            <Link href="/register">
+              <a>Register</a>
+            </Link>
+          </p>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col">
+          <p className="text-center h6 ">
+            <Link href="/forgot-password">
+              <a className="text-danger">Forgot Password</a>
+            </Link>
+          </p>
+        </div>
+      </div>
     </>
   );
 };
