@@ -104,8 +104,10 @@ const register = () => {
 
   return (
     <>
-      <div className="register">
-        <h1>Register</h1>
+      <div className="row py-5 text-light bg-default-img  ">
+        <div className="col text-center">
+          <h1>Register</h1>
+        </div>
       </div>
       <div className="row py-5">
         <div className="col-md-4 offset-md-4">

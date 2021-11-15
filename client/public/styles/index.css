@@ -4,17 +4,11 @@
   box-sizing: border-box;
   font-family: sans-serif;
 }
-.register {
-  width: 100vw;
-  height: 300px;
+
+.bg-default-img {
   background-image: url("/images/default.jpg");
-  background-color: grey;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
-  background-repeat: no-repeat;
   background-size: 100%;
-  text-shadow: 2px 2px 2px #0001;
+  height: 250px;
+  align-items: center;
+  text-shadow: 2px 2px 8px #000;
 }
