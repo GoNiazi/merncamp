@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 
 const dashboard = () => {
   const [state, setstate] = useContext(UserContext);
+  const [image, setimage] = useState({});
+  const [uploading, setuploading] = useState(false);
 
   //state
   const [content, setcontent] = useState("");
@@ -18,19 +20,36 @@ const dashboard = () => {
   const postSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("/create-post", { content });
+      const { data } = await axios.post("/create-post", { content, image });
       if (data.error) {
         toast.error(data.error);
       } else {
         toast.success("Post created");
         console.log(data);
         setcontent("");
+        setimage({});
       }
     } catch (error) {
       console.log(error);
     }
   };
-
+  const handleImage = async (e) => {
+    const file = e.target.files[0];
+    const formdata = new FormData();
+    formdata.append("image", file);
+    setuploading(true);
+    try {
+      const { data } = await axios.post("/upload-image", formdata);
+      setimage({
+        url: data.url,
+        public_id: data.public_id,
+      });
+      setuploading(false);
+    } catch (error) {
+      console.log(error);
+      setuploading(false);
+    }
+  };
   return (
     <UserRouter>
       <div className="container-fluid ">
@@ -45,6 +64,9 @@ const dashboard = () => {
               content={content}
               setcontent={setcontent}
               postSubmit={postSubmit}
+              handleImage={handleImage}
+              image={image}
+              uploading={uploading}
             />
           </div>
           <div className="col-md-4">sidebar</div>

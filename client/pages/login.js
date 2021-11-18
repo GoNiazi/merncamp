@@ -1,18 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../context";
-// import { makeStyles } from "@material-ui/core";
-// import Box from "@mui/material/Box";
-// import TextField from "@mui/material/TextField";
-// import MenuItem from "@mui/material/MenuItem";
-// import Button from "@mui/material/Button";
-// import SendIcon from "@mui/icons-material/Send";
+
 import axios from "axios";
 import { toast } from "react-toastify";
-// import Modal from "@mui/material/Modal";
-// import Backdrop from "@mui/material/Backdrop";
-// import Fade from "@mui/material/Fade";
-// import Typography from "@mui/material/Typography";
-// import LoopIcon from "@material-ui/icons/Loop";
+
 import Link from "next/link";
 import AuthForm from "./../components/forms/AuthForm";
 import { useRouter } from "next/router";
