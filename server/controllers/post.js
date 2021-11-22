@@ -35,3 +35,14 @@ export const uploadImage = async (req, res) => {
     console.log(error);
   }
 };
+
+export const postedByUser = async (req, res) => {
+  try {
+    console.log("im in posts");
+    const posts = await Post.find({ postedBy: req.user._id })
+      .populate("postedBy", "_id name image")
+      .sort({ createdAt: -1 })
+      .limit(10);
+    res.json(posts);
+  } catch (error) {}
+};

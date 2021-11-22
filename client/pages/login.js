@@ -51,7 +51,7 @@ const login = () => {
       // Save user in local storage
     } catch (err) {
       // console.log("hello im back in catch");
-      toast.error(error);
+      toast.error(err);
 
       setloading(false);
     }
