@@ -3,6 +3,7 @@ import { Avatar } from "antd";
 import moment from "moment";
 import renderHtml from "react-render-html";
 import PostImage from "../images/PostImage";
+import { useRouter } from "next/router";
 import {
   HeartOutlined,
   HeartFilled,
@@ -12,8 +13,9 @@ import {
 } from "@ant-design/icons";
 import { UserContext } from "../../context";
 
-const PostList = ({ posts }) => {
+const PostList = ({ posts, handleDelete }) => {
   const [state] = useContext(UserContext);
+  const router = useRouter();
   return (
     <>
       {posts &&
@@ -40,8 +42,14 @@ const PostList = ({ posts }) => {
                 </div>
                 {state && state.user && state.user._id === post.postedBy._id && (
                   <>
-                    <EditOutlined className="text-danger pt-2 h5 px-2 mx-auto" />
-                    <DeleteOutlined className="text-danger pt-2 h5 px-2 " />
+                    <EditOutlined
+                      onClick={() => router.push(`/user/post/${post._id}`)}
+                      className="text-danger pt-2 h5 px-2 mx-auto"
+                    />
+                    <DeleteOutlined
+                      onClick={() => handleDelete(post)}
+                      className="text-danger pt-2 h5 px-2 "
+                    />
                   </>
                 )}
               </div>

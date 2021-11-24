@@ -2,17 +2,20 @@ import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../context";
 // import "bootstrap/dist/css/bootstrap.min.css";
 import UserRouter from "../../components/routes/UserRouter";
-import CreatePostForm from "../../components/forms/CreatePostForm";
+import PostForm from "../../components/forms/PostForm";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { toast } from "react-toastify";
 import PostList from "../../components/cards/PostList";
+// import { Modal } from "antd";
 
 const dashboard = () => {
   const [state, setstate] = useContext(UserContext);
   const [image, setimage] = useState({});
   const [uploading, setuploading] = useState(false);
   const [posts, setposts] = useState([]);
+  // const [sure, setsure] = useState(false);
+
   //state
   const [content, setcontent] = useState("");
   //route
@@ -64,18 +67,28 @@ const dashboard = () => {
       setuploading(false);
     }
   };
-
+  const handleDelete = async (post) => {
+    const answer = window.confirm("Are you sure?");
+    if (!answer) return;
+    try {
+      const { data } = await axios.delete(`/delete-post/${post._id}`);
+      toast.error("Post Deleted");
+      fetchposts();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <UserRouter>
       <div className="container-fluid ">
-        <div className="row jkpy-5 text-light bg-default-img ">
+        <div className="row py-5 text-light bg-default-img ">
           <div className="col text-center ">
             <h1>NewsFeed</h1>
           </div>
         </div>
         <div className="row py-3">
           <div className="col-md-8 ">
-            <CreatePostForm
+            <PostForm
               content={content}
               setcontent={setcontent}
               postSubmit={postSubmit}
@@ -84,10 +97,27 @@ const dashboard = () => {
               uploading={uploading}
             />
             <br />
-            <PostList posts={posts} />
+            <PostList posts={posts} handleDelete={handleDelete} />
           </div>
           {/* <pre>{JSON.stringify(posts, null, 4)}</pre> */}
           <div className="col-md-4">sidebar</div>
+          {/* <div className="row">
+            <div className="col">
+              <Modal
+                title={"Are you sure ?"}
+                visible={sure}
+                onCancel={() => setsure(false)}
+                footer={null}
+              >
+                <button
+                  className="btn btn-primary mt-1"
+                  onClick={() => setsure(false)}
+                >
+                  OK
+                </button>
+              </Modal>
+            </div>
+          </div> */}
         </div>
       </div>
     </UserRouter>

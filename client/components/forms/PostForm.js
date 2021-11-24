@@ -5,13 +5,14 @@ import { CameraOutlined, LoadingOutlined } from "@ant-design/icons";
 import "react-quill/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const CreatePostForm = ({
+const PostForm = ({
   content,
   setcontent,
   postSubmit,
   handleImage,
   image,
   uploading,
+  page,
 }) => {
   return (
     <div className="card">
@@ -33,7 +34,7 @@ const CreatePostForm = ({
           onClick={postSubmit}
           className="btn btn-primary mt-1"
         >
-          Post
+          {page === "edit" ? "Update" : "Post"}
         </button>
         <label>
           {image && image.url ? (
@@ -54,4 +55,4 @@ const CreatePostForm = ({
   );
 };
 
-export default CreatePostForm;
+export default PostForm;
