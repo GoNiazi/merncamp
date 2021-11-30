@@ -12,3 +12,7 @@
   align-items: center;
   text-shadow: 2px 2px 8px #000;
 }
+
+.active {
+  border-bottom: 4px solid #00e7ff;
+}

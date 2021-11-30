@@ -1,34 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../context";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import { makeStyles } from "@material-ui/core";
 import { useRouter } from "next/router";
 import Link from "next/link";
-const useStyles = makeStyles((theme) => ({
-  //   appbar: {
-  //     display: "flex",
-  //     justifyContent: "center",
-  //     alignItems: "center",
-  //   },
-  //   login: {
-  //     flexGrow: 1,
-  //   },
-  //   register: {
-  //     flexGrow: 1,
-  //   },
-  active: {
-    backgroundColor: "black",
-  },
-}));
 
 const Nav = () => {
-  const classes = useStyles();
   const [state, setstate] = useContext(UserContext);
   const router = useRouter();
   const [current, setcurrent] = useState("");
@@ -37,109 +12,99 @@ const Nav = () => {
     process.browser && setcurrent(window.location.pathname);
   }, [process.browser && window.location.pathname]);
 
+  console.log(current);
   const logout = () => {
     window.localStorage.removeItem("auth");
     setstate(null);
     router.push("/login");
   };
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        position="static"
-        // className={classes.appbar}
-        // display="flex"
-        // direction="row"
-        // justifyContent="center"
-        // alignItems="center"
-      >
-        <Toolbar
-          className={classes.toolbar}
-          // display="flex"
-          // direction="row"
-          // justifyContent="center"
-          // alignItems="center"
-          // spacing={2}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+    <nav
+      className="nav d-flex justify-content-between"
+      style={{
+        backgroundColor: "#0CA5F2",
+        border: "none",
+        outline: "none",
+        height: "43px",
+        alignItems: "center",
+        padding: "0px",
+      }}
+    >
+      <Link href="/">
+        <a
+          className={`nav-link text-light logo ${current === "/" && "active"}`}
         >
-          <nav
-            style={{
-              height: "64px",
+          Home
+        </a>
+      </Link>
 
-              // justifyContent: "center",
-              // alignItems: "center",
-            }}
-          >
-            <Link href="/" className={classes.height}>
-              <Button
-                color="inherit"
-                variant="h6"
-                className={current === "/" && classes.active}
-                sx={{
-                  minHeight: "100%",
-                  margin: "0",
-                }}
-              >
-                Home
-              </Button>
-            </Link>
-            {state !== null ? (
-              <>
+      {state !== null ? (
+        <>
+          <div className="dropdown">
+            <button
+              className="btn  dropdown-toggle text-light"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              {state.user.name}
+            </button>
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li>
                 <Link href="/user/dashboard">
-                  <Button
-                    color="inherit"
-                    variant="h6"
-                    className={current === "/user/dashboard" && classes.active}
-                    sx={{
-                      minHeight: "100%",
-                      margin: "0",
-                    }}
+                  <a
+                    className={`nav-link dropdown-item ${
+                      current === "/user/dashboard" && "active"
+                    }`}
                   >
-                    {state.user.name}
-                  </Button>
+                    Dashboard
+                  </a>
                 </Link>
-                <Button color="inherit" variant="h6">
-                  <a onClick={logout}>Logout</a>
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className={classes.height}>
-                  <Button
-                    color="inherit"
-                    variant="h6"
-                    className={current === "/login" && classes.active}
-                    sx={{
-                      minHeight: "100%",
-                      margin: "0",
-                    }}
+              </li>
+              <li>
+                <Link href="/user/profile/update">
+                  <a
+                    className={`nav-link dropdown-item ${
+                      current === "/user/profile/update" && "active"
+                    }`}
                   >
-                    Login
-                  </Button>
+                    Profile
+                  </a>
                 </Link>
+              </li>
+              <li>
+                <a onClick={logout} className="nav-link  dropdown-item">
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </div>
+        </>
+      ) : (
+        <>
+          <Link href="/login">
+            <a
+              className={`nav-link text-light ${
+                current === "/login" && "active"
+              }`}
+            >
+              Login
+            </a>
+          </Link>
 
-                <Link href="/register" className={classes.height}>
-                  <Button
-                    color="inherit"
-                    variant="h6"
-                    className={current === "/register" && classes.active}
-                    sx={{
-                      minHeight: "100%",
-                      margin: "0",
-                    }}
-                  >
-                    Register
-                  </Button>
-                </Link>
-              </>
-            )}
-          </nav>
-        </Toolbar>
-      </AppBar>
-    </Box>
+          <Link href="/register">
+            <a
+              className={`nav-link text-light ${
+                current === "/register" && "active"
+              }`}
+            >
+              Register
+            </a>
+          </Link>
+        </>
+      )}
+    </nav>
   );
 };
 

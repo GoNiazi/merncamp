@@ -54,8 +54,10 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <div className="register">
-        <h1>Forgot Password</h1>
+      <div className="row py-5 text-light bg-default-img  ">
+        <div className="col text-center">
+          <h1>Forgot Password</h1>
+        </div>
       </div>
       <div className="row py-5">
         <div className="col-md-6 offset-md-3">

@@ -1,6 +1,7 @@
 import User from "./../models/user";
 import { hashPassword, comparepassword } from "./../helpers/auth";
 import jwt from "jsonwebtoken";
+import { nanoid } from "nanoid";
 export const register = async (req, res) => {
   const { name, email, password, secret } = req.body;
 
@@ -31,7 +32,13 @@ export const register = async (req, res) => {
   const hashedpassword = await hashPassword(password);
 
   //POST VALUES
-  const user = new User({ name, email, password: hashedpassword, secret });
+  const user = new User({
+    name,
+    email,
+    password: hashedpassword,
+    secret,
+    username: nanoid(6),
+  });
   try {
     await user.save();
     console.log(user);
@@ -123,5 +130,49 @@ export const forgotpassword = async (req, res) => {
     return res.json({
       error: "somthing wrong, Try again",
     });
+  }
+};
+
+export const profileUpdate = async (req, res) => {
+  console.log(req.body);
+  try {
+    let data = {};
+
+    if (req.body.username) {
+      data.username = req.body.username;
+    }
+    if (req.body.name) {
+      data.name = req.body.name;
+    }
+    if (req.body.about) {
+      data.about = req.body.about;
+    }
+    if (req.body.password) {
+      if (req.body.password.length < 6) {
+        res.json({
+          error: "Password should be Larger than 6 characters",
+        });
+      } else {
+        data.password = await hashedPassword(req.body.password);
+      }
+    }
+    if (req.body.secret) {
+      data.secret = req.body.secret;
+    }
+    if (req.body.image) {
+      data.image = req.body.image;
+    }
+
+    let user = await User.findByIdAndUpdate(req.user._id, data, { new: true });
+    user.password = undefined;
+    user.secret = undefined;
+    res.json(user);
+  } catch (error) {
+    if (error.code === 11000) {
+      res.json({
+        error: "Username is already Taken",
+      });
+    }
+    console.log(error);
   }
 };
