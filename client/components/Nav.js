@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../context";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Avatar } from "antd";
 
 const Nav = () => {
   const [state, setstate] = useContext(UserContext);
@@ -22,7 +23,7 @@ const Nav = () => {
     <nav
       className="nav d-flex justify-content-between"
       style={{
-        backgroundColor: "#0CA5F2",
+        backgroundColor: "#1972a4",
         border: "none",
         outline: "none",
         height: "43px",
@@ -34,7 +35,7 @@ const Nav = () => {
         <a
           className={`nav-link text-light logo ${current === "/" && "active"}`}
         >
-          Home
+          <Avatar size={10} src="/images/logo.png" /> <span>Kelium</span>
         </a>
       </Link>
 

@@ -1,4 +1,5 @@
 import Post from "../models/post";
+import User from "../models/user";
 import cloudinary from "cloudinary";
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -75,6 +76,49 @@ export const Deletepost = async (req, res) => {
     res.json({
       ok: true,
     });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const newsFeed = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    let following = user.following;
+    following.push(req.user._id);
+
+    const posts = await Post.find({ postedBy: { $in: following } })
+      .populate("postedBy", "_id name image")
+      .sort({ createdAt: -1 })
+      .limit(15);
+    res.json(posts);
+  } catch (error) {}
+};
+export const postLike = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(
+      req.body._id,
+      {
+        $addToSet: { likes: req.user._id },
+      },
+      { new: true }
+    );
+    console.log("send like");
+    res.json(post);
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const postUnlike = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(
+      req.body._id,
+      {
+        $pull: { likes: req.user._id },
+      },
+      { new: true }
+    );
+    res.json(post);
   } catch (error) {
     console.log(error);
   }

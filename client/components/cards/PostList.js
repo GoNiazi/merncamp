@@ -12,8 +12,9 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import { UserContext } from "../../context";
+import { imagesrc } from "../functions/index";
 
-const PostList = ({ posts, handleDelete }) => {
+const PostList = ({ posts, handleDelete, handleunlike, handlelike }) => {
   const [state] = useContext(UserContext);
   const router = useRouter();
   return (
@@ -22,7 +23,8 @@ const PostList = ({ posts, handleDelete }) => {
         posts.map((post) => (
           <div key={post._id} className="card mb-5">
             <div className="card-header">
-              <Avatar size={40}>{post.postedBy.name[0]}</Avatar>
+              {/* <Avatar size={40}>{post.postedBy.name[0]}</Avatar> */}
+              <Avatar size={40} src={imagesrc(post.postedBy)} />
               <span style={{ marginLeft: "1rem" }}>{post.postedBy.name}</span>
               <span style={{ marginLeft: "1rem" }}>
                 {moment(post.createdAt).fromNow()}
@@ -32,9 +34,20 @@ const PostList = ({ posts, handleDelete }) => {
             <div className="card-footer">
               {post.image && <PostImage url={post.image.url} />}
               <div className="d-flex pt-2">
-                <HeartOutlined className="text-danger pt-2 h5 px-2" />
+                {post.likes.includes(state.user._id) ? (
+                  <HeartFilled
+                    onClick={() => handleunlike(post._id)}
+                    className="text-danger pt-2 h5 px-2"
+                  />
+                ) : (
+                  <HeartOutlined
+                    onClick={() => handlelike(post._id)}
+                    className="text-danger pt-2 h5 px-2"
+                  />
+                )}
+
                 <div className="pt-2 pl-3" style={{ marginRight: "2rem" }}>
-                  3 likes
+                  {post.likes.length} likes
                 </div>
                 <CommentOutlined className="text-danger pt-2 h5 px-2" />
                 <div className="pt-2 pl-3" style={{ marginRight: "2rem" }}>

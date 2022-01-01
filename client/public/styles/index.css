@@ -16,3 +16,12 @@
 .active {
   border-bottom: 4px solid #00e7ff;
 }
+.pointer {
+  cursor: pointer;
+}
+.suggestions {
+  background: #1caed93b;
+  border: 0.3px solid #37a8d300;
+  border-radius: 0px 47px 0px 0px;
+  padding: 8px;
+}

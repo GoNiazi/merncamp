@@ -11,6 +11,7 @@ function MyApp({ Component, pageProps }) {
     <UserProvider>
       <Head>
         <link rel="stylesheet" href="/styles/index.css" />
+        <link rel="icon" href="/images/favicon.png" />
       </Head>
       <Nav />
       <ToastContainer

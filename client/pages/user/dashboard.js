@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { toast } from "react-toastify";
 import PostList from "../../components/cards/PostList";
+import PeopleList from "../../components/cards/PeopleList";
+import Link from "next/link";
 // import { Modal } from "antd";
 
 const dashboard = () => {
@@ -14,7 +16,9 @@ const dashboard = () => {
   const [image, setimage] = useState({});
   const [uploading, setuploading] = useState(false);
   const [posts, setposts] = useState([]);
-  // const [sure, setsure] = useState(false);
+  const [loading, setloading] = useState(false);
+  //people
+  const [people, setpeople] = useState([]);
 
   //state
   const [content, setcontent] = useState("");
@@ -22,13 +26,24 @@ const dashboard = () => {
   const router = useRouter();
   useEffect(() => {
     if (state && state.token) {
-      fetchposts();
+      newsfeed();
+      fetchpeople();
     }
   }, [state && state.token]);
-  const fetchposts = async () => {
+  const newsfeed = async () => {
     try {
-      const { data } = await axios.get("/user-posts");
+      const { data } = await axios.get("/newsfeed");
       setposts(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const fetchpeople = async () => {
+    setloading(true);
+    try {
+      const { data } = await axios.get("/find-people");
+      setpeople(data);
+      setloading(false);
     } catch (error) {
       console.log(error);
     }
@@ -40,7 +55,7 @@ const dashboard = () => {
       if (data.error) {
         toast.error(data.error);
       } else {
-        fetchposts();
+        newsfeed();
         toast.success("Post created");
         console.log(data);
         setcontent("");
@@ -73,7 +88,46 @@ const dashboard = () => {
     try {
       const { data } = await axios.delete(`/delete-post/${post._id}`);
       toast.error("Post Deleted");
-      fetchposts();
+      newsfeed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleFollow = async (user) => {
+    try {
+      const { data } = await axios.put("/user-follow", { _id: user._id });
+      //user upadte in local storage except token
+      let auth = JSON.parse(localStorage.getItem("auth"));
+      auth.user = data;
+      localStorage.setItem("auth", JSON.stringify(auth));
+      //update user context
+      setstate({ ...state, user: data });
+      //filtering the list
+      let filtered = people.filter((p) => p._id !== user._id);
+      setpeople(filtered);
+      toast.success(`Following ${user.name}`);
+      newsfeed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handlelike = async (_id) => {
+    console.log("hello in like");
+    try {
+      console.log("hello inn like");
+      const { data } = await axios.put("/post-like", { _id });
+      console.log(data);
+      newsfeed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleunlike = async (_id) => {
+    console.log("hello in unlike");
+    try {
+      const { data } = await axios.put("/post-unlike", { _id });
+      console.log(data);
+      newsfeed();
     } catch (error) {
       console.log(error);
     }
@@ -97,10 +151,44 @@ const dashboard = () => {
               uploading={uploading}
             />
             <br />
-            <PostList posts={posts} handleDelete={handleDelete} />
+            <PostList
+              posts={posts}
+              handleDelete={handleDelete}
+              handlelike={handlelike}
+              handleunlike={handleunlike}
+            />
           </div>
           {/* <pre>{JSON.stringify(posts, null, 4)}</pre> */}
-          <div className="col-md-4">sidebar</div>
+          <div className="col-md-4">
+            {state &&
+              state.user &&
+              state.user.following &&
+              state.user.followers && (
+                <>
+                  <Link href="/user/following">
+                    <a className="h6">
+                      {state.user.following.length} Following
+                    </a>
+                  </Link>
+                  <Link href="/user/followers">
+                    <a className="h6" style={{ marginLeft: "2rem" }}>
+                      {state.user.followers.length}
+                      {state.user.followers.length === 1
+                        ? " Follower"
+                        : " Followers"}
+                    </a>
+                  </Link>
+                </>
+              )}
+            <p className="d-flex justify-content-center suggestions">
+              People You May Know
+            </p>
+            <PeopleList
+              people={people}
+              loading={loading}
+              handleFollow={handleFollow}
+            />
+          </div>
           {/* <div className="row">
             <div className="col">
               <Modal
