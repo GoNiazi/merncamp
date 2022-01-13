@@ -9,6 +9,8 @@ import {
   newsFeed,
   postUnlike,
   postLike,
+  removeComment,
+  addComment,
 } from "./../controllers/post";
 import { RequireSignin, canEditDeletePost } from "../middlewares";
 import formidable from "express-formidable";
@@ -33,5 +35,7 @@ router.delete(
 router.get("/newsfeed", RequireSignin, newsFeed);
 router.put("/post-like", RequireSignin, postLike);
 router.put("/post-unlike", RequireSignin, postUnlike);
+router.put("/add-comment", RequireSignin, addComment);
+router.put("/remove-comment", RequireSignin, removeComment);
 
 module.exports = router;

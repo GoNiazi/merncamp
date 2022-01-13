@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import PostList from "../../components/cards/PostList";
 import PeopleList from "../../components/cards/PeopleList";
 import Link from "next/link";
-// import { Modal } from "antd";
+import { Modal } from "antd";
 
 const dashboard = () => {
   const [state, setstate] = useContext(UserContext);
@@ -17,10 +17,13 @@ const dashboard = () => {
   const [uploading, setuploading] = useState(false);
   const [posts, setposts] = useState([]);
   const [loading, setloading] = useState(false);
+  const [comment, setcomment] = useState("");
+  const [currentpost, setcurrentpost] = useState({});
+  const [visible, setvisible] = useState(false);
   //people
   const [people, setpeople] = useState([]);
 
-  //state
+  //content
   const [content, setcontent] = useState("");
   //route
   const router = useRouter();
@@ -132,6 +135,26 @@ const dashboard = () => {
       console.log(error);
     }
   };
+  const handlecomment = (post) => {
+    setcurrentpost(post);
+    setvisible(true);
+  };
+
+  const addcomment = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.put("/add-comment", {
+        postid: currentpost._id,
+        comment,
+      });
+      console.log(data);
+      setcomment("");
+      setvisible(false);
+      newsfeed();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <UserRouter>
       <div className="container-fluid ">
@@ -156,6 +179,7 @@ const dashboard = () => {
               handleDelete={handleDelete}
               handlelike={handlelike}
               handleunlike={handleunlike}
+              handlecomment={handlecomment}
             />
           </div>
           {/* <pre>{JSON.stringify(posts, null, 4)}</pre> */}
@@ -189,24 +213,26 @@ const dashboard = () => {
               handleFollow={handleFollow}
             />
           </div>
-          {/* <div className="row">
-            <div className="col">
-              <Modal
-                title={"Are you sure ?"}
-                visible={sure}
-                onCancel={() => setsure(false)}
-                footer={null}
-              >
-                <button
-                  className="btn btn-primary mt-1"
-                  onClick={() => setsure(false)}
-                >
-                  OK
-                </button>
-              </Modal>
-            </div>
-          </div> */}
         </div>
+        <Modal
+          title="Comment"
+          visible={visible}
+          onCancel={() => setvisible(false)}
+          footer={null}
+        >
+          <form onSubmit={addcomment}>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Write something"
+              value={comment}
+              onChange={(e) => setcomment(e.target.value)}
+            />
+            <button className="btn btn-primary btn-sm btn-block mt-3">
+              Submit
+            </button>
+          </form>
+        </Modal>
       </div>
     </UserRouter>
   );

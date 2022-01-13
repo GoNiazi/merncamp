@@ -50,7 +50,9 @@ export const postedByUser = async (req, res) => {
 
 export const UserPost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params._id);
+    const post = await Post.findById(req.params._id)
+      .populate("postedBy", "_id name image")
+      .populate("comments.postedBy", "_id name image");
     res.json(post);
   } catch (error) {
     console.log(error);
@@ -89,6 +91,7 @@ export const newsFeed = async (req, res) => {
 
     const posts = await Post.find({ postedBy: { $in: following } })
       .populate("postedBy", "_id name image")
+      .populate("comments.postedBy", "_id name image")
       .sort({ createdAt: -1 })
       .limit(15);
     res.json(posts);
@@ -118,6 +121,42 @@ export const postUnlike = async (req, res) => {
       },
       { new: true }
     );
+    res.json(post);
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const addComment = async (req, res) => {
+  try {
+    const { postid, comment } = req.body;
+    const post = await Post.findByIdAndUpdate(
+      postid,
+      {
+        $push: { comments: { text: comment, postedBy: req.user._id } },
+      },
+      { new: true }
+    )
+      .populate("postedBy", "_id name image")
+      .populate("comments.postedBy", "_id name image");
+    res.json(post);
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const removeComment = async (req, res) => {
+  try {
+    const { postid, comment } = req.body;
+    console.log("comment", comment);
+    console.log(comment._id);
+
+    const post = await Post.findByIdAndUpdate(
+      postid,
+      {
+        $pull: { comments: { text: comment.text } },
+      },
+      { new: true }
+    );
+    console.log(post);
     res.json(post);
   } catch (error) {
     console.log(error);

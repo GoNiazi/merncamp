@@ -16,7 +16,7 @@ const Nav = () => {
   console.log(current);
   const logout = () => {
     window.localStorage.removeItem("auth");
-    setstate(null);
+    setstate();
     router.push("/login");
   };
   return (
@@ -49,7 +49,7 @@ const Nav = () => {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              {state.user.name}
+              {state && state.user && state.user.name}
             </button>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li>
