@@ -88,12 +88,15 @@ export const newsFeed = async (req, res) => {
     const user = await User.findById(req.user._id);
     let following = user.following;
     following.push(req.user._id);
+    const currentpage = req.params.page || 1;
+    const perpage = 3;
 
     const posts = await Post.find({ postedBy: { $in: following } })
+      .skip((currentpage - 1) * perpage)
       .populate("postedBy", "_id name image")
       .populate("comments.postedBy", "_id name image")
       .sort({ createdAt: -1 })
-      .limit(15);
+      .limit(perpage);
     res.json(posts);
   } catch (error) {}
 };
@@ -157,6 +160,39 @@ export const removeComment = async (req, res) => {
       { new: true }
     );
     console.log(post);
+    res.json(post);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const totalPosts = async (req, res) => {
+  try {
+    const total = await Post.find().estimatedDocumentCount();
+    console.log("total: ", total);
+    res.json(total);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const posts = async (req, res) => {
+  try {
+    const posts = await Post.find()
+      .populate("postedBy", "_id name username image")
+      .populate("comments.postedBy", " _id name username image")
+      .sort({ createdAt: -1 })
+      .limit(12);
+    res.json(posts);
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const post = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params._id)
+      .populate("postedBy", "_id name username image")
+      .populate("comments.postedBy", " _id name username image");
     res.json(post);
   } catch (error) {
     console.log(error);

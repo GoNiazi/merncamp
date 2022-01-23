@@ -15,7 +15,7 @@ import { UserContext } from "../../context";
 import { imagesrc } from "../functions/index";
 import Link from "next/link";
 
-const Post = ({
+const PublicPost = ({
   post,
   handleDelete,
   handleunlike,
@@ -48,39 +48,22 @@ const Post = ({
               post &&
               post.likes &&
               post.likes.includes(state.user._id) ? (
-                <HeartFilled
-                  onClick={() => handleunlike(post._id)}
-                  className="text-danger pt-2 h5 px-2"
-                />
+                <HeartFilled className="text-danger pt-2 h5 px-2" />
               ) : (
-                <HeartOutlined
-                  onClick={() => handlelike(post._id)}
-                  className="text-danger pt-2 h5 px-2"
-                />
+                <HeartOutlined className="text-danger pt-2 h5 px-2" />
               )}
 
               <div className="pt-2 pl-3" style={{ marginRight: "2rem" }}>
                 {post.likes.length} likes
               </div>
-              <CommentOutlined
-                onClick={() => handlecomment(post)}
-                className="text-danger pt-2 h5 px-2"
-              />
+              <CommentOutlined className="text-danger pt-2 h5 px-2" />
               <div className="pt-2 pl-3" style={{ marginRight: "2rem" }}>
-                <Link href={`/post/${post._id}`}>
-                  <a>{post.comments.length} comments</a>
-                </Link>
+                <a>{post.comments.length} comments</a>
               </div>
               {state && state.user && state.user._id === post.postedBy._id && (
                 <>
-                  <EditOutlined
-                    onClick={() => router.push(`/user/post/${post._id}`)}
-                    className="text-danger pt-2 h5 px-2 mx-auto"
-                  />
-                  <DeleteOutlined
-                    onClick={() => handleDelete(post)}
-                    className="text-danger pt-2 h5 px-2 "
-                  />
+                  <EditOutlined className="text-danger pt-2 h5 px-2 mx-auto" />
+                  <DeleteOutlined className="text-danger pt-2 h5 px-2 " />
                 </>
               )}
             </div>
@@ -110,10 +93,7 @@ const Post = ({
                     {moment(c.created).fromNow()}
                     {state && state.user && state.user._id === c.postedBy._id && (
                       <div className="ml-auto mt-1">
-                        <DeleteOutlined
-                          onClick={() => removecomment(post._id, c)}
-                          className="text-danger pl-2"
-                        />
+                        <DeleteOutlined className="text-danger pl-2" />
                       </div>
                     )}
                   </div>
@@ -127,4 +107,4 @@ const Post = ({
   );
 };
 
-export default Post;
+export default PublicPost;

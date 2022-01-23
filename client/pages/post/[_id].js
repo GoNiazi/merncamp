@@ -19,8 +19,10 @@ const PostComments = () => {
 
   const fetchpost = async () => {
     try {
+      console.log("emoty", post);
       const { data } = await axios.get(`/user-post/${_id}`);
       setpost(data);
+      console.log("full", post);
     } catch (error) {
       console.log(error);
     }

@@ -253,3 +253,33 @@ export const userunFollow = async (req, res) => {
     console.log(error);
   }
 };
+
+export const searchUser = async (req, res) => {
+  try {
+    console.log("im there");
+    const { query } = req.params;
+    if (!query) return;
+    const result = await User.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { username: { $regex: query, $options: "i" } },
+      ],
+    }).select("-password -secret");
+    console.log("in back", result);
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const userProfile = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ username: username }).select(
+      "-password -secret"
+    );
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+  }
+};

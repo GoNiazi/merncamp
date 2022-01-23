@@ -11,6 +11,9 @@ import {
   postLike,
   removeComment,
   addComment,
+  totalPosts,
+  posts,
+  post,
 } from "./../controllers/post";
 import { RequireSignin, canEditDeletePost } from "../middlewares";
 import formidable from "express-formidable";
@@ -32,10 +35,12 @@ router.delete(
   canEditDeletePost,
   Deletepost
 );
-router.get("/newsfeed", RequireSignin, newsFeed);
+router.get("/newsfeed/:page", RequireSignin, newsFeed);
 router.put("/post-like", RequireSignin, postLike);
 router.put("/post-unlike", RequireSignin, postUnlike);
 router.put("/add-comment", RequireSignin, addComment);
 router.put("/remove-comment", RequireSignin, removeComment);
-
+router.get("/total-posts", totalPosts);
+router.get("/posts", posts);
+router.get("/post/:_id", post);
 module.exports = router;

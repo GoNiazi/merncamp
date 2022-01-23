@@ -9,7 +9,8 @@ import { toast } from "react-toastify";
 import PostList from "../../components/cards/PostList";
 import PeopleList from "../../components/cards/PeopleList";
 import Link from "next/link";
-import { Modal } from "antd";
+import { Modal, Pagination } from "antd";
+import Search from "../../components/Search";
 
 const dashboard = () => {
   const [state, setstate] = useContext(UserContext);
@@ -22,7 +23,9 @@ const dashboard = () => {
   const [visible, setvisible] = useState(false);
   //people
   const [people, setpeople] = useState([]);
-
+  //pagination
+  const [totalpost, settotalpost] = useState(0);
+  const [page, setpage] = useState(1);
   //content
   const [content, setcontent] = useState("");
   //route
@@ -32,10 +35,20 @@ const dashboard = () => {
       newsfeed();
       fetchpeople();
     }
-  }, [state && state.token]);
+  }, [state && state.token, page]);
+
+  useEffect(() => {
+    try {
+      axios.get("/total-posts").then(({ data }) => settotalpost(data));
+
+      settotalpost(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
   const newsfeed = async () => {
     try {
-      const { data } = await axios.get("/newsfeed");
+      const { data } = await axios.get(`/newsfeed/${page}`);
       setposts(data);
     } catch (error) {
       console.log(error);
@@ -58,6 +71,7 @@ const dashboard = () => {
       if (data.error) {
         toast.error(data.error);
       } else {
+        setpage(1);
         newsfeed();
         toast.success("Post created");
         console.log(data);
@@ -155,6 +169,17 @@ const dashboard = () => {
       console.log(error);
     }
   };
+  const removecomment = async (postid, comment) => {
+    let answer = window.confirm("Are you sure?");
+    if (!answer) return;
+    try {
+      const { data } = await axios.put("/remove-comment", { postid, comment });
+      newsfeed();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <UserRouter>
       <div className="container-fluid ">
@@ -175,15 +200,26 @@ const dashboard = () => {
             />
             <br />
             <PostList
+              key={posts._id}
               posts={posts}
               handleDelete={handleDelete}
               handlelike={handlelike}
               handleunlike={handleunlike}
               handlecomment={handlecomment}
+              removecomment={removecomment}
+            />
+            <Pagination
+              current={page}
+              total={(totalpost / 3) * 10}
+              onChange={(value) => setpage(value)}
+              className="pb-5"
             />
           </div>
           {/* <pre>{JSON.stringify(posts, null, 4)}</pre> */}
+
           <div className="col-md-4">
+            <Search />
+            <br />
             {state &&
               state.user &&
               state.user.following &&
